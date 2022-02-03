@@ -2,6 +2,7 @@
 
 namespace Knp\Bundle\GaufretteBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ChildDefinition;
@@ -54,20 +55,19 @@ class KnpGaufretteExtension extends Extension
         }
     }
 
-    public function getConfiguration(array $configs, ContainerBuilder $container)
+    public function getConfiguration(array $config, ContainerBuilder $container): ?ConfigurationInterface
     {
         // first assemble the adapter factories
         $factoryConfig = new FactoryConfiguration();
-        $config        = $this->processConfiguration($factoryConfig, $configs);
-        $factories     = $this->createAdapterFactories($config, $container);
+        $configuration = $this->processConfiguration($factoryConfig, $config);
+        $factories     = $this->createAdapterFactories($configuration, $container);
 
         // then normalize the configs
         return new MainConfiguration($factories);
     }
 
-    private function createAdapter($name, array $config, ContainerBuilder $container, array $factories)
+    private function createAdapter($name, array $config, ContainerBuilder $container, array $factories): string
     {
-        $adapter = null;
         foreach ($config as $key => $adapter) {
             if (array_key_exists($key, $factories)) {
                 $id = sprintf('gaufrette.%s_adapter', $name);

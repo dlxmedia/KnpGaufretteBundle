@@ -47,15 +47,13 @@ class FilesystemMap implements \IteratorAggregate, FilesystemMapInterface
 
     /**
      * @param string $name name of a filesystem
-     *
-     * @return bool
      */
-    public function has($name)
+    public function has($name): bool
     {
         return isset($this->maps[$name]);
     }
 
-    public function getIterator()
+    public function getIterator() :\Traversable
     {
         return new \ArrayIterator($this->maps);
     }
